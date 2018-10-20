@@ -3,11 +3,11 @@ Microcontroller_Labor.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000dc  00000000  00000000  00000054  2**1
+  0 .text         000000da  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  00000130  2**0
+  1 .data         00000000  00800060  00800060  0000012e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  00000130  2**0
+  2 .comment      00000030  00000000  00000000  0000012e  2**0
                   CONTENTS, READONLY
   3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000160  2**2
                   CONTENTS, READONLY
@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 000006fb  00000000  00000000  00000a63  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000030b  00000000  00000000  0000115e  2**0
+  7 .debug_line   00000305  00000000  00000000  0000115e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000078  00000000  00000000  0000146c  2**2
+  8 .debug_frame  00000078  00000000  00000000  00001464  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000042b  00000000  00000000  000014e4  2**0
+  9 .debug_str    0000042b  00000000  00000000  000014dc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000e7  00000000  00000000  0000190f  2**0
+ 10 .debug_loc    000000e7  00000000  00000000  00001907  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000030  00000000  00000000  000019f6  2**0
+ 11 .debug_ranges 00000030  00000000  00000000  000019ee  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,7 +61,7 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 51 00 	call	0xa2	; 0xa2 <main>
-  64:	0c 94 6c 00 	jmp	0xd8	; 0xd8 <_exit>
+  64:	0c 94 6b 00 	jmp	0xd6	; 0xd6 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -123,9 +123,9 @@ void LedBarMeter::SetBarMeter(int count)
   a0:	08 95       	ret
 
 000000a2 <main>:
-	}
-}
-*/
+#include "PortControl.h"
+#include "LedBarMeter.h"
+
 
 int main(void)
 {
@@ -138,42 +138,42 @@ int main(void)
 	DDRA = 0xF0; // set upper nibble to write, lower nibble to read
   ac:	80 ef       	ldi	r24, 0xF0	; 240
   ae:	8a bb       	out	0x1a, r24	; 26
-	PORTA |= (1 << PA0);
-  b0:	d8 9a       	sbi	0x1b, 0	; 27
+	//PORTA |= (1 << PA0); // set Port A's Pin 0 to read
 	
 	LedBarMeter led_bar = LedBarMeter();
-  b2:	ce 01       	movw	r24, r28
-  b4:	01 96       	adiw	r24, 0x01	; 1
-  b6:	0e 94 36 00 	call	0x6c	; 0x6c <_ZN11LedBarMeterC1Ev>
+  b0:	ce 01       	movw	r24, r28
+  b2:	01 96       	adiw	r24, 0x01	; 1
+  b4:	0e 94 36 00 	call	0x6c	; 0x6c <_ZN11LedBarMeterC1Ev>
 	
     uint8_t count = 0;
-  ba:	10 e0       	ldi	r17, 0x00	; 0
+  b8:	10 e0       	ldi	r17, 0x00	; 0
+	//uint8_t pot_value = 0;
     while(1)
     {
 		led_bar.SetBarMeter(count);
-  bc:	61 2f       	mov	r22, r17
-  be:	70 e0       	ldi	r23, 0x00	; 0
-  c0:	ce 01       	movw	r24, r28
-  c2:	01 96       	adiw	r24, 0x01	; 1
-  c4:	0e 94 37 00 	call	0x6e	; 0x6e <_ZN11LedBarMeter11SetBarMeterEi>
-	    count += 10;
-  c8:	16 5f       	subi	r17, 0xF6	; 246
+  ba:	61 2f       	mov	r22, r17
+  bc:	70 e0       	ldi	r23, 0x00	; 0
+  be:	ce 01       	movw	r24, r28
+  c0:	01 96       	adiw	r24, 0x01	; 1
+  c2:	0e 94 37 00 	call	0x6e	; 0x6e <_ZN11LedBarMeter11SetBarMeterEi>
+	    count += 1;
+  c6:	1f 5f       	subi	r17, 0xFF	; 255
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-  ca:	83 ec       	ldi	r24, 0xC3	; 195
-  cc:	99 e0       	ldi	r25, 0x09	; 9
-  ce:	01 97       	sbiw	r24, 0x01	; 1
-  d0:	f1 f7       	brne	.-4      	; 0xce <main+0x2c>
-  d2:	00 c0       	rjmp	.+0      	; 0xd4 <main+0x32>
-  d4:	00 00       	nop
-  d6:	f2 cf       	rjmp	.-28     	; 0xbc <main+0x1a>
+  c8:	83 ec       	ldi	r24, 0xC3	; 195
+  ca:	99 e0       	ldi	r25, 0x09	; 9
+  cc:	01 97       	sbiw	r24, 0x01	; 1
+  ce:	f1 f7       	brne	.-4      	; 0xcc <main+0x2a>
+  d0:	00 c0       	rjmp	.+0      	; 0xd2 <main+0x30>
+  d2:	00 00       	nop
+  d4:	f2 cf       	rjmp	.-28     	; 0xba <main+0x18>
 
-000000d8 <_exit>:
-  d8:	f8 94       	cli
+000000d6 <_exit>:
+  d6:	f8 94       	cli
 
-000000da <__stop_program>:
-  da:	ff cf       	rjmp	.-2      	; 0xda <__stop_program>
+000000d8 <__stop_program>:
+  d8:	ff cf       	rjmp	.-2      	; 0xd8 <__stop_program>
