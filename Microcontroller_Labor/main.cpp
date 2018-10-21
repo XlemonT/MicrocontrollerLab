@@ -26,7 +26,7 @@ int main(void)
     while(1)
     {
 		led_bar.SetBarMeter(count);
-	    count += 1;
+	    count += 10;
 	    _delay_ms(10);
     }
 }
