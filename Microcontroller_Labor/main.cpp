@@ -10,6 +10,7 @@
 
 #include "PortControl.h"
 #include "LedBarMeter.h"
+#include "LcdDriver.h"
 
 
 int main(void)
@@ -20,6 +21,10 @@ int main(void)
 	
 	LedBarMeter led_bar = LedBarMeter();
 	PORTA |= (1 << 2); // make LED 3 light up to prove that LED bar does not interfere with lower nibble (upper LED bar)
+	
+	LcdDriver lcd = LcdDriver();
+	lcd.init();
+	lcd.print("Hello World!");
 	
     uint8_t count = 0;
 	//uint8_t pot_value = 0;
