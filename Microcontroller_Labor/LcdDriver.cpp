@@ -12,7 +12,7 @@
 // default constructor
 LcdDriver::LcdDriver()
 {
-	DDRB = 0xFF;
+	LCD_DDR = 0xFF; // set lcd port to write
 } //LcdDriver
 
 // default destructor
@@ -31,10 +31,10 @@ void LcdDriver::init()
 	_delay_us(200); // wait 200us
 	
 	send(0x03); // init 3
-	_delay_us(40); // wait 40us
+	_delay_us(LCD_DELAY_COMMAND); // wait 40us
 	
 	send((LCD_I_FUNCTION_SET | LCD_FUNCTION_SET_DL4) >> 4); // set function set to 4 bits
-	_delay_us(40); // wait 40us for function set command
+	_delay_us(LCD_DELAY_COMMAND); // wait 40us for function set command
 	
 	// set lines
 	send_command( LCD_I_FUNCTION_SET | LCD_FUNCTION_SET_DL4 | LCD_FUNCTION_SET_2LINE | LCD_FUNCTION_SET_5x10);
@@ -67,18 +67,18 @@ void LcdDriver::send_command(uint8_t command_8bit)
 {
 	LCD_PORT &= ~(1 << LCD_PIN_RS);    // set RS to IR (RS = 0)
 	
-	send(command_8bit >> 4); //send upper nibble 0xX0
-	send(command_8bit); // send lower nibble 0x0X
+	send(command_8bit >> 4); //send upper nibble X0
+	send(command_8bit); // send lower nibble 0X
 	
 	//_delay_us( LCD_DELAY_COMMAND ); // min 37 uS
 }
 
 void LcdDriver::send_data(uint8_t data_8bit)
 {
-	LCD_PORT |= ~(1 << LCD_PIN_RS);    // set RS to DR (RS = 1)
+	LCD_PORT |= (1 << LCD_PIN_RS);    // set RS to DR (RS = 1)
 	
-	send(data_8bit >> 4); //send upper nibble 0xX0
-	send(data_8bit); // send lower nibble 0x0X
+	send(data_8bit >> 4); //send upper nibble X0
+	send(data_8bit); // send lower nibble 0X
 	
 	//_delay_us( LCD_DELAY_COMMAND ); // min 37 uS
 }
@@ -93,5 +93,11 @@ void LcdDriver::print(const char* text)
 void LcdDriver::clear_display()
 {
 	send_command(LCD_I_CLEAR);
-	_delay_ms(2);
+	_delay_ms(LCD_DELAY_LONG_COMMAND);
+}
+
+void LcdDriver::return_home()
+{
+	send_command(LCD_I_HOME);
+	_delay_ms(LCD_DELAY_LONG_COMMAND);
 }

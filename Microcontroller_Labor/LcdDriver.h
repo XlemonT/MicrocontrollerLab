@@ -11,10 +11,12 @@
 #include <avr/io.h>
 
 #define LCD_PORT PORTB
+#define LCD_DDR DDRB
 
 // DELAYS
 #define LCD_DELAY_PULSE 50
 #define LCD_DELAY_COMMAND 40
+#define LCD_DELAY_LONG_COMMAND 1.5
 
 #define LCD_PIN_RS PB0
 #define LCD_PIN_RW PB1
@@ -57,6 +59,8 @@ public:
 	~LcdDriver();
 	void init();
 	void print(const char* text);
+	void clear_display();
+	void return_home();
 	
 protected:
 private:
@@ -64,9 +68,6 @@ private:
 	void send(uint8_t data);
 	void send_command(uint8_t command_8bit);
 	void send_data(uint8_t data_8bit);
-	void clear();
-	void clear_display();
-	
 
 }; //LcdDriver
 
