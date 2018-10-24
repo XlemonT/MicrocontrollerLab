@@ -19,7 +19,7 @@ LedBarMeter::~LedBarMeter()
 {
 } //~LedBarMeter
 
-
+// https://msdn.microsoft.com/en-us/library/office/gg251651.aspxhttps://msdn.microsoft.com/de-de/library/87by589c.aspx
 void LedBarMeter::SetBarMeter(int count)
 {
 	PORTA &= 0x0F; // set the upper nibble to all 0s

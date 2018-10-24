@@ -13,6 +13,7 @@
 LcdDriver::LcdDriver()
 {
 	LCD_DDR = 0xFF; // set lcd port to write
+	this->FourBitMode = true;
 } //LcdDriver
 
 // default destructor

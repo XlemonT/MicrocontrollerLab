@@ -20,7 +20,7 @@
 
 #define LCD_PIN_RS PB0
 #define LCD_PIN_RW PB1
-#define LCD_PIN_E PB2
+#define LCD_PIN_E PB3
 #define LCD_PIN_DB_START PB4
 
 // INSTRUCTIONS
@@ -47,7 +47,7 @@ class LcdDriver
 public:
 protected:
 private:
-	bool FourBitMode = true;
+	bool FourBitMode;
 
 //constants
 private:
